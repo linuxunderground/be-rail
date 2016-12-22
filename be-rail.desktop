@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=be-rail
+Exec=be-rail
+Icon=be-rail
+Type=Application
+Terminal=false
+Categories=Qt;Viewer;
