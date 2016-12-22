@@ -22,9 +22,9 @@ See scripts/build-db.sh
 
 Linux compilation:   
    
-$ cmake .
-$ make
-# make install
+$ cmake .   
+$ make   
+$ sudo make install   
    
    
 Windows(tm) compilation:
