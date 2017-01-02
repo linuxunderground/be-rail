@@ -22,7 +22,8 @@ See scripts/build-db.sh
 
 Linux compilation:   
    
-$ cmake .   
+$ cmake .  
+($ cmake -DCMAKE_BUILD_TYPE=Debug .  if you want debug build)  
 $ make   
 $ sudo make install   
    
