@@ -1,7 +1,7 @@
 /*
  * https://github.com/linuxunderground/be-rail
  *
- * Copyright (C) 2016 Linuxunderground <be-rail@linuxunderground.be>
+ * Copyright (C) 2016-2017 Linuxunderground <be-rail@linuxunderground.be>
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version
@@ -21,8 +21,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-//#include <QtWidgets>
 #include <QMainWindow>
+#include <QTableView>
 
 class MainWindow : public QMainWindow
 {
@@ -33,13 +33,15 @@ class MainWindow : public QMainWindow
 
     private slots:
         void about();
+        void on_sectionClicked(int);
 
     private:
         void setupMenuBar();
         void showTelCode();
 
+        QTableView *stationView;
+
         //QAction *aboutAct;
-//        QMenu *mainWindowMenu;
 };
 
 #endif

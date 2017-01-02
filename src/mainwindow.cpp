@@ -1,7 +1,7 @@
 /*
  * https://github.com/linuxunderground/be-rail
  *
- * Copyright (C) 2016 Linuxunderground <be-rail@linuxunderground.be>
+ * Copyright (C) 2016-2017 Linuxunderground <be-rail@linuxunderground.be>
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version
@@ -20,17 +20,19 @@
 
 #include "mainwindow.h"
 
-//#include <QtWidgets>
-//#include <QAction>
-#include <QLayout>
+#include <limits>
 #include <QApplication>
+#include <QDesktopWidget>
+#include <QLayout>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QSqlTableModel>
-#include <QTableView>
+#include <QHeaderView>
+#include <QStyleOptionHeader>
 #include <QMessageBox>
 #include <QMenu>
 #include <QMenuBar>
-#include <limits>
+#include <QDebug>
 
 MainWindow::MainWindow()
 {
@@ -43,8 +45,7 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Menu"),
             tr("<b>be-rail</b> "
-               "version "STR_VERSION"<br>"));
-               //"DATA: "DATADIR));
+               "version " STR_VERSION "<br>"));
 }
 
 void MainWindow::setupMenuBar()
@@ -60,19 +61,53 @@ void MainWindow::setupMenuBar()
     //connect(AboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
+void MainWindow::on_sectionClicked(int aIndex)
+{
+    if (stationView->horizontalHeader()->sortIndicatorOrder()==Qt::AscendingOrder)
+    {
+        stationView->sortByColumn(aIndex,Qt::AscendingOrder);
+    }
+    else
+    {
+        stationView->sortByColumn(aIndex,Qt::DescendingOrder);
+    }
+}
+
 void MainWindow::showTelCode()
 {
+    QHeaderView *hHeaderView;
+
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setHostName("localhost");
-    db.setDatabaseName(DATADIR "/be-rail.sqlite");
-    //db.setDatabaseName("be-rail.sqlite");
-    db.setUserName("root");
-    db.setPassword("");
+    //db.setDatabaseName(DATADIR "/be-rail.sqlite");
+    db.setDatabaseName("be-rail.sqlite");
 
     if (!db.open())
     {
-        QMessageBox::critical(this, tr("Error"), tr("sqlite database not found: " DATADIR "/be-rail.sqlite"));
+        QMessageBox::critical(this, tr("Error"), tr("Connection with database " DATADIR "/be-rail.sqlite failed"));
+        qDebug() << "Error: connection with database " DATADIR "/be-rail.sqlite failed";
     }
+    else
+    {
+        qDebug() << "Database: connection with " DATADIR "/be-rail.sqlite";
+    }
+
+#ifdef QT_DEBUG
+    qDebug() << "Available drivers :";
+    foreach (QString name, QSqlDatabase::drivers()) qDebug() << name;
+
+    QSqlQuery query;
+    query.prepare("SELECT count(*) FROM stations");
+    //query.bindValue(":tablename", table); bind is OK for FROM clause ????
+
+    if (query.exec())
+    {
+        if (query.next())
+        {
+            uint nbrec = query.value(0).toUInt();
+            qDebug() << "Found" << nbrec << "stations";
+        }
+    }
+#endif
 
      QSqlTableModel *stationModel = new QSqlTableModel;
      stationModel->setTable("stations");
@@ -84,21 +119,24 @@ void MainWindow::showTelCode()
      stationModel->setHeaderData(3, Qt::Horizontal,tr("Code"));
      stationModel->setHeaderData(4, Qt::Horizontal,tr("Old code"));
      stationModel->setHeaderData(5, Qt::Horizontal,tr("Remark"));
- 
-     QTableView *stationView = new QTableView;
-     stationView->setModel(stationModel);
-     stationView->resizeColumnsToContents();
-     /*
-     stationView->setVisible(false);
-     QRect vpsav = stationView->viewport()->geometry();
-     QRect vpnew = vpsav;
-     vpnew.setWidth(std::numeric_limits<int>::max());
-     stationView->viewport()->setGeometry(vpnew);
 
-     stationView->resizeRowsToContents();
-     stationView->viewport()->setGeometry(vpsav);
-     stationView->setVisible(true);
-*/
+     stationView = new QTableView;
+     stationView->verticalHeader()->setVisible(false);
+     stationView->horizontalHeader()->setSortIndicatorShown(true);
+     stationView->setModel(stationModel);
+
+     stationView->setSelectionBehavior(QAbstractItemView::SelectRows);
+     stationView->setSelectionMode(QAbstractItemView::SingleSelection);
+     stationView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+     hHeaderView = stationView->horizontalHeader();
+     connect(hHeaderView, SIGNAL(sectionClicked(int)), this, SLOT(on_sectionClicked(int)));
+
+     stationView->sortByColumn(3,Qt::AscendingOrder);
+     stationView->resizeColumnsToContents();
+     //stationView->resizeRowsToContents();  // Why is it not as simple as this ?
+     stationView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
      QVBoxLayout *MainLayout = new QVBoxLayout;
      MainLayout->addWidget(stationView);
  
