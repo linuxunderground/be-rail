@@ -2,7 +2,7 @@
 #
 # Grab be-rail data from Paul Kevers website
 #
-# Copyright (C) 2016  be-rail@linuxunderground.be
+# Copyright (C) 2016-2017  be-rail@linuxunderground.be
 # Distributed under the terms of the GNU General Public License v3
 #
 
@@ -71,7 +71,8 @@ cat "$STATIONS" | grep "^[0-9]" | grep -v "^...[0-9]" | \
     -e 's|hslxxx|HSL|;s|fcvxxx|FCV|' \
     -e '/Géronstère (in/ s|Géronstère |Géronstère,n-a,n-a,|' \
     -e 's|,n-a,n-a,||2' \
-    -e '/,$/! s|$|,|' | cat -n | sed \
+    -e '/,$/! s|$|,|' \
+    -e 's|$|,|' | cat -n | sed \
     -e 's|n-a||g' \
     -e 's|[[:space:]]\{1,\}||' \
     -e 's|[[:space:]]\{1,\}|,|' > $1

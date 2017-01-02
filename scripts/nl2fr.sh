@@ -2,7 +2,7 @@
 #
 # Dutch to French
 #
-# Copyright (C) 2016  be-rail@linuxunderground.be
+# Copyright (C) 2016-2017  be-rail@linuxunderground.be
 # Distributed under the terms of the GNU General Public License v3
 #
 
@@ -13,7 +13,6 @@ export LC_COLLATE="C"
 
 sed \
   -e 's/grens/frontière/g' \
-  -e 's/zie/voir/g' \
   -e 's/verwijst de code FCV misschien naar/Le code FCV se réfère peut-être à/' \
   -e "s/werkbasis en noodperron bij HSL/base de travail et plate-forme d'urgence sur/" \
   -e 's/Franse benaming/dénomination française/' \
@@ -25,4 +24,5 @@ sed \
   -e "s/uitwijkspoor en noodperron op HSL/voie d'évitement et plate-forme d'urgence sur LGV/" \
   -e 's/Vorming/Formation/' \
   -e 's/goederenstation/gare de marchandises/' \
-  -e "s/nieuwe stopplaats vanaf 10 juni 2001/nouveau point d'arrêt à partir du 10 juin 2001/"
+  -e "s/nieuwe stopplaats vanaf 10 juni 2001/nouveau point d'arrêt à partir du 10 juin 2001/" \
+  -e 's/zie/voir/g'
