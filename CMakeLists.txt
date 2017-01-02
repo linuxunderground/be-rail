@@ -4,7 +4,7 @@ project(be-rail)
 
 include(GNUInstallDirs)
 
-set(STR_VERSION "0.0.1")
+set(STR_VERSION "0.0.2")
 
 set(EXE_NAME be-rail)
 

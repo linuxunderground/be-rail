@@ -78,8 +78,8 @@ void MainWindow::showTelCode()
     QHeaderView *hHeaderView;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    //db.setDatabaseName(DATADIR "/be-rail.sqlite");
-    db.setDatabaseName("be-rail.sqlite");
+    db.setDatabaseName(DATADIR "/be-rail.sqlite");
+    //db.setDatabaseName("be-rail.sqlite");
 
     if (!db.open())
     {
