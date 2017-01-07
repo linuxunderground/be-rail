@@ -30,8 +30,10 @@ $ sudo make install
    
 Windows(tm) compilation:
    
-FYI only, I had not tested yet. This will probably require yet some hacking of
-the CMakeLists.txt. On Windows, using MinGW:   
+I used [Qt 5.7.1 for Windows 32-bit (MinGW 5.3.0, 1.1 GB)](https://www.qt.io/download-open-source/)
+to compile be-rail on Windows:   
    
 C:\be-rail> cmake -G "MinGW Makefiles" .   
-C:\be-rail> make   
+C:\be-rail> mingw32-make  
+  
+Unlike linux version, the database must be in the same directory as the program.

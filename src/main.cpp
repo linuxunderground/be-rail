@@ -1,7 +1,7 @@
 /*
  * https://github.com/linuxunderground/be-rail
  *
- * Copyright (C) 2016 Linuxunderground <be-rail@linuxunderground.be>
+ * Copyright (C) 2016-2017 Linuxunderground <be-rail@linuxunderground.be>
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/be-rail.png"));
     MainWindow window;
     window.show();
 

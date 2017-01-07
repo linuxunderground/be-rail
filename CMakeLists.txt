@@ -2,9 +2,15 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(be-rail)
 
-include(GNUInstallDirs)
-
 set(STR_VERSION "0.0.2")
+
+if(WIN32)
+  set(CMAKE_INSTALL_BINDIR "${CMAKE_INSTALL_PREFIX}/be-rail")
+  set(DATADIR ".")
+else()
+  include(GNUInstallDirs)
+  set(DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/be-rail")
+endif()
 
 set(EXE_NAME be-rail)
 
@@ -13,6 +19,8 @@ set(BE_RAIL_DB
     db/be-rail-nl.sqlite
     db/be-rail.sqlite
 )
+
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/build)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -30,11 +38,8 @@ include(CPack)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 
-set(DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/be-rail")
 add_definitions(-DDATADIR=\"${DATADIR}\")
-
 add_definitions(-DSTR_VERSION=\"${STR_VERSION}\")
-
 
 add_subdirectory(src)
 
