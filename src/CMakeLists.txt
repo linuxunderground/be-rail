@@ -22,7 +22,7 @@ set(be-rail_RESOURCES icons.qrc)
 qt5_add_resources(be-rail_RESOURCES_RCC ${be-rail_RESOURCES})
 
 # Tell CMake to create the be-rail executable
-add_executable(be-rail main.cpp mainwindow.cpp ${be-rail_RESOURCES_RCC} ${RES_FILES})
+add_executable(be-rail WIN32 main.cpp mainwindow.cpp ${be-rail_RESOURCES_RCC} ${RES_FILES})
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(be-rail Qt5::Widgets Qt5::Sql)
