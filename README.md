@@ -6,7 +6,7 @@ This Qt5 program shows you a list of all the stations of the
 Belgian Railways with their telegraphic codes.
 
 This project is licensed under the terms of the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
-or any later version. See the COPYING file for the full text of the license.
+or any later version. See the LICENSE file for the full text of the license.
 
 
 ## Source of database
