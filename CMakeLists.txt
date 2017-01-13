@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(be-rail)
 
-set(STR_VERSION "0.0.2")
+set(STR_VERSION "0.0.3")
 
 if(WIN32)
   set(CMAKE_INSTALL_BINDIR "${CMAKE_INSTALL_PREFIX}/be-rail/bin")

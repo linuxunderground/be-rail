@@ -36,4 +36,4 @@ to compile be-rail on Windows:
 C:\be-rail> cmake -G "MinGW Makefiles" .   
 C:\be-rail> mingw32-make  
   
-Unlike linux version, the database must be in the same directory as the program.
+Unlike linux version, the database must be in a db subdirectory.
