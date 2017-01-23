@@ -91,7 +91,7 @@ void MainWindow::showTelCode()
         qDebug() << "Database: connection with " DATADIR "/be-rail.sqlite";
     }
 
-#ifdef QT_DEBUG
+#ifndef NDEBUG
     qDebug() << "Available drivers :";
     foreach (QString name, QSqlDatabase::drivers()) qDebug() << name;
 
