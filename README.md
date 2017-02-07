@@ -26,6 +26,7 @@ Linux compilation:
    
 $ cmake .  
 ($ cmake -DCMAKE_BUILD_TYPE=Debug .  if you want debug build)  
+($ cmake -DDATADIR=../db .  if you want to start be-rail from build directory without installation)  
 $ make   
 $ sudo make install   
    
