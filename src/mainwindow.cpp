@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QMenuBar>
+#include <QFile>
 #include <QDebug>
 
 MainWindow::MainWindow()
@@ -76,19 +77,26 @@ void MainWindow::on_sectionClicked(int aIndex)
 void MainWindow::showTelCode()
 {
     QHeaderView *hHeaderView;
+    QString dbfilename;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(DATADIR "/be-rail.sqlite");
-    //db.setDatabaseName("be-rail.sqlite");
+    dbfilename = DATADIR "/be-rail_" + QLocale::system().name().left(2) + ".sqlite";
+    if (!QFile::exists(dbfilename))
+    {
+        qDebug() << dbfilename << "not found";
+        dbfilename = DATADIR "/be-rail.sqlite";
+        qDebug() << dbfilename << "fallback";
+    }
+    db.setDatabaseName(dbfilename);
 
     if (!db.open())
     {
-        QMessageBox::critical(this, tr("Error"), tr("Connection with database " DATADIR "/be-rail.sqlite failed"));
-        qDebug() << "Error: connection with database " DATADIR "/be-rail.sqlite failed";
+        QMessageBox::critical(this, tr("Error"), tr("Connection with database %1 failed").arg(dbfilename));
+        qDebug() << "Error: connection with database " << dbfilename;
     }
     else
     {
-        qDebug() << "Database: connection with " DATADIR "/be-rail.sqlite";
+        qDebug() << "Database: connection with " << dbfilename;
     }
 
 #ifndef NDEBUG
