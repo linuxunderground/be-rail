@@ -80,7 +80,7 @@ void MainWindow::showTelCode()
     QString dbfilename;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    dbfilename = DATADIR "/be-rail_" + QLocale::system().name().left(2) + ".sqlite";
+    dbfilename = DATADIR "/be-rail-" + QLocale::system().name().left(2) + ".sqlite";
     if (!QFile::exists(dbfilename))
     {
         qDebug() << dbfilename << "not found";
@@ -93,6 +93,7 @@ void MainWindow::showTelCode()
     {
         QMessageBox::critical(this, tr("Error"), tr("Connection with database %1 failed").arg(dbfilename));
         qDebug() << "Error: connection with database " << dbfilename;
+        return;
     }
     else
     {
