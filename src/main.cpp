@@ -19,6 +19,10 @@
 
 
 #include <QApplication>
+#ifndef NDEBUG
+#include <QDebug>
+#include <QStringList>
+#endif
 
 #include "mainwindow.h"
  
@@ -34,6 +38,12 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/be-rail.png"));
+
+#ifndef NDEBUG
+    qDebug() << "QLocale::system = " << QLocale::system().name();
+    qDebug() << "QLocale::system = " << QLocale::system().uiLanguages();
+#endif
+
     MainWindow window;
     window.show();
 
