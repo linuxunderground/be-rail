@@ -55,7 +55,7 @@ MainWindow::MainWindow()
 
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->addTab(new StationsTab(), tr("Stations"));
-    tabWidget->addTab(new QWidget(), tr("Lines"));
+    tabWidget->addTab(new LinesTab(), tr("Lines"));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabWidget);
@@ -180,5 +180,38 @@ StationsTab::StationsTab(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *MainLayout = new QVBoxLayout;
     MainLayout->addWidget(stationsView);
+    setLayout(MainLayout);
+}
+
+void LinesTab::on_sectionClicked(int aIndex)
+{
+    sectionClicked(linesView, aIndex);
+}
+
+LinesTab::LinesTab(QWidget *parent) : QWidget(parent)
+{
+    QSqlTableModel *linesModel = new QSqlTableModel;
+    linesModel->setTable("lines");
+    linesModel->select();
+    linesModel->setHeaderData(0, Qt::Horizontal,tr("Number"));
+    linesModel->setHeaderData(1, Qt::Horizontal,tr("Name"));
+    linesView = new QTableView;
+    linesView->verticalHeader()->setVisible(false);
+    linesView->horizontalHeader()->setSortIndicatorShown(true);
+    linesView->setModel(linesModel);
+
+    linesView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    linesView->setSelectionMode(QAbstractItemView::SingleSelection);
+    linesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    QHeaderView *hHeaderView = linesView->horizontalHeader();
+    connect(hHeaderView, SIGNAL(sectionClicked(int)), this, SLOT(on_sectionClicked(int)));
+
+    //stationsView->sortByColumn(0,Qt::AscendingOrder);
+    linesView->resizeColumnsToContents();
+    linesView->resizeRowsToContents();  // Why does this not work for stations view ?
+
+    QVBoxLayout *MainLayout = new QVBoxLayout;
+    MainLayout->addWidget(linesView);
     setLayout(MainLayout);
 }

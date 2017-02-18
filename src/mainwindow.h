@@ -45,6 +45,12 @@ class LinesTab : public QWidget
 
     public:
         explicit LinesTab(QWidget *parent = 0);
+
+    private slots:
+        void on_sectionClicked(int);
+
+    private:
+        QTableView *linesView;
 };
 
 class MainWindow : public QMainWindow
