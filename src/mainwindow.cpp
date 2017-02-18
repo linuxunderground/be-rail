@@ -35,52 +35,40 @@
 #include <QFile>
 #include <QDebug>
 
-MainWindow::MainWindow()
+void sectionClicked(QTableView *aTableView, int aIndex)
 {
-    setupMenuBar();
-    resize(640, 480);
-    showTelCode();
-}
-
-void MainWindow::about()
-{
-    QMessageBox::about(this, tr("About Menu"),
-            tr("<b>be-rail</b> "
-               "version " STR_VERSION "<br>"));
-}
-
-void MainWindow::setupMenuBar()
-{
-    QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
-
-    helpMenu->addAction(tr("About"), this, &MainWindow::about);
-    //QAction *AboutAction = helpMenu->addAction(tr("About")); 
-    //connect(AboutAction, SIGNAL(triggered()), this, SLOT(about()));
-
-    helpMenu->addAction(tr("About Qt"), qApp, &QApplication::aboutQt);
-    //QAction *AboutQtAction = helpMenu->addAction(tr("About Qt"));
-    //connect(AboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-}
-
-void MainWindow::on_sectionClicked(int aIndex)
-{
-    if (stationView->horizontalHeader()->sortIndicatorOrder()==Qt::AscendingOrder)
+    if (aTableView->horizontalHeader()->sortIndicatorOrder()==Qt::AscendingOrder)
     {
-        stationView->sortByColumn(aIndex,Qt::AscendingOrder);
+        aTableView->sortByColumn(aIndex,Qt::AscendingOrder);
     }
     else
     {
-        stationView->sortByColumn(aIndex,Qt::DescendingOrder);
+        aTableView->sortByColumn(aIndex,Qt::DescendingOrder);
     }
 }
 
-void MainWindow::showTelCode()
+MainWindow::MainWindow()
 {
-    QHeaderView *hHeaderView;
-    QString dbfilename;
+    setupDB();
+    setupMenuBar();
+    resize(640, 480);
 
+    QTabWidget *tabWidget = new QTabWidget;
+    tabWidget->addTab(new StationsTab(), tr("Stations"));
+    tabWidget->addTab(new QWidget(), tr("Lines"));
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(tabWidget);
+
+    QWidget *centerZone = new QWidget;
+    centerZone->setLayout(mainLayout);
+    setCentralWidget(centerZone);
+}
+
+void MainWindow::setupDB()
+{
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    dbfilename = DATADIR "/be-rail-" + QLocale::system().name().left(2) + ".sqlite";
+    QString dbfilename = DATADIR "/be-rail-" + QLocale::system().name().left(2) + ".sqlite";
     if (!QFile::exists(dbfilename))
     {
         qDebug() << dbfilename << "not found";
@@ -101,55 +89,96 @@ void MainWindow::showTelCode()
     }
 
 #ifndef NDEBUG
-    qDebug() << "Available drivers :";
-    foreach (QString name, QSqlDatabase::drivers()) qDebug() << name;
-
     QSqlQuery query;
-    query.prepare("SELECT count(*) FROM stations");
-    //query.bindValue(":tablename", table); bind is OK for FROM clause ????
+    uint nbrec;
 
+    query.prepare("SELECT count(*) FROM stations");
     if (query.exec())
     {
-        if (query.next())
+        if (query.first())
         {
-            uint nbrec = query.value(0).toUInt();
+            nbrec = query.value(0).toUInt();
             qDebug() << "Found" << nbrec << "stations";
         }
+        query.finish();
+    }
+    query.prepare("SELECT count(*) FROM lines");
+    if (query.exec())
+    {
+        if (query.first())
+        {
+            nbrec = query.value(0).toUInt();
+            qDebug() << "Found" << nbrec << "lines";
+        }
+        query.finish();
     }
 #endif
+}
 
-     QSqlTableModel *stationModel = new QSqlTableModel;
-     stationModel->setTable("stations");
-     stationModel->select();
-     stationModel->removeColumn(0);
-     stationModel->setHeaderData(0, Qt::Horizontal,tr("Line"));
-     stationModel->setHeaderData(1, Qt::Horizontal,tr("OOS"));
-     stationModel->setHeaderData(2, Qt::Horizontal,tr("Station"));
-     stationModel->setHeaderData(3, Qt::Horizontal,tr("Code"));
-     stationModel->setHeaderData(4, Qt::Horizontal,tr("Old code"));
-     stationModel->setHeaderData(5, Qt::Horizontal,tr("Remark"));
+void MainWindow::setupMenuBar()
+{
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    //fileMenu->addSeparator();
+    fileMenu->addAction(tr("&Quit"), this, &MainWindow::quit);
 
-     stationView = new QTableView;
-     stationView->verticalHeader()->setVisible(false);
-     stationView->horizontalHeader()->setSortIndicatorShown(true);
-     stationView->setModel(stationModel);
+    QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 
-     stationView->setSelectionBehavior(QAbstractItemView::SelectRows);
-     stationView->setSelectionMode(QAbstractItemView::SingleSelection);
-     stationView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    helpMenu->addAction(tr("About"), this, &MainWindow::about);
+    //QAction *AboutAction = helpMenu->addAction(tr("About")); 
+    //connect(AboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-     hHeaderView = stationView->horizontalHeader();
-     connect(hHeaderView, SIGNAL(sectionClicked(int)), this, SLOT(on_sectionClicked(int)));
+    helpMenu->addAction(tr("About Qt"), qApp, &QApplication::aboutQt);
+    //QAction *AboutQtAction = helpMenu->addAction(tr("About Qt"));
+    //connect(AboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+}
 
-     stationView->sortByColumn(3,Qt::AscendingOrder);
-     stationView->resizeColumnsToContents();
-     //stationView->resizeRowsToContents();  // Why is it not as simple as this ?
-     stationView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+void MainWindow::quit()
+{
+    close();
+}
 
-     QVBoxLayout *MainLayout = new QVBoxLayout;
-     MainLayout->addWidget(stationView);
- 
-     QWidget *centerZone = new QWidget;
-     centerZone->setLayout(MainLayout);
-     setCentralWidget(centerZone);
+void MainWindow::about()
+{
+    QMessageBox::about(this, tr("About Menu"),
+            tr("<b>be-rail</b> "
+               "version " STR_VERSION "<br>"));
+}
+
+void StationsTab::on_sectionClicked(int aIndex)
+{
+    sectionClicked(stationsView, aIndex);
+}
+
+StationsTab::StationsTab(QWidget *parent) : QWidget(parent)
+{
+    QSqlTableModel *stationsModel = new QSqlTableModel;
+    stationsModel->setTable("stations");
+    stationsModel->select();
+    stationsModel->removeColumn(0);
+    stationsModel->setHeaderData(0, Qt::Horizontal,tr("Line"));
+    stationsModel->setHeaderData(1, Qt::Horizontal,tr("OOS"));
+    stationsModel->setHeaderData(2, Qt::Horizontal,tr("Station"));
+    stationsModel->setHeaderData(3, Qt::Horizontal,tr("Code"));
+    stationsModel->setHeaderData(4, Qt::Horizontal,tr("Old code"));
+    stationsModel->setHeaderData(5, Qt::Horizontal,tr("Remark"));
+    stationsView = new QTableView;
+    stationsView->verticalHeader()->setVisible(false);
+    stationsView->horizontalHeader()->setSortIndicatorShown(true);
+    stationsView->setModel(stationsModel);
+
+    stationsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    stationsView->setSelectionMode(QAbstractItemView::SingleSelection);
+    stationsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    QHeaderView *hHeaderView = stationsView->horizontalHeader();
+    connect(hHeaderView, SIGNAL(sectionClicked(int)), this, SLOT(on_sectionClicked(int)));
+
+    stationsView->sortByColumn(3,Qt::AscendingOrder);
+    stationsView->resizeColumnsToContents();
+    //stationView->resizeRowsToContents();  // Why is it not as simple as this ?
+    stationsView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    QVBoxLayout *MainLayout = new QVBoxLayout;
+    MainLayout->addWidget(stationsView);
+    setLayout(MainLayout);
 }

@@ -24,6 +24,29 @@
 #include <QMainWindow>
 #include <QTableView>
 
+
+class StationsTab : public QWidget
+{
+    Q_OBJECT
+
+    public:
+        explicit StationsTab(QWidget *parent = 0);
+
+    private slots:
+        void on_sectionClicked(int);
+
+    private:
+        QTableView *stationsView;
+};
+
+class LinesTab : public QWidget
+{
+    Q_OBJECT
+
+    public:
+        explicit LinesTab(QWidget *parent = 0);
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -32,16 +55,12 @@ class MainWindow : public QMainWindow
         MainWindow();
 
     private slots:
+        void quit();
         void about();
-        void on_sectionClicked(int);
 
     private:
+        void setupDB();
         void setupMenuBar();
-        void showTelCode();
-
-        QTableView *stationView;
-
-        //QAction *aboutAct;
 };
 
 #endif

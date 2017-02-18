@@ -20,6 +20,7 @@
 
 #include <QApplication>
 #ifndef NDEBUG
+#include <QSqlDatabase>
 #include <QDebug>
 #include <QStringList>
 #endif
@@ -40,8 +41,10 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/be-rail.png"));
 
 #ifndef NDEBUG
-    qDebug() << "QLocale::system = " << QLocale::system().name();
-    qDebug() << "QLocale::system = " << QLocale::system().uiLanguages();
+    qDebug() << "Available drivers :";
+    foreach (QString name, QSqlDatabase::drivers()) qDebug() << name;
+    qDebug() << "QLocale::system().name()        = " << QLocale::system().name();
+    qDebug() << "QLocale::system().uiLanguages() = " << QLocale::system().uiLanguages();
 #endif
 
     MainWindow window;
