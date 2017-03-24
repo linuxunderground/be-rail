@@ -51,11 +51,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>About Menu</source>
+        <source>&lt;b&gt;be-rail&lt;/b&gt; version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;be-rail&lt;/b&gt; version </source>
+        <source>About be-rail</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

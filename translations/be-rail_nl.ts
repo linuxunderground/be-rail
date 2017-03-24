@@ -51,12 +51,12 @@
         <translation>Over Qt</translation>
     </message>
     <message>
-        <source>About Menu</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;be-rail&lt;/b&gt; version </source>
         <translation>&lt;b&gt;be-rail&lt;/b&gt; versie </translation>
+    </message>
+    <message>
+        <source>About be-rail</source>
+        <translation>Over be-rail</translation>
     </message>
 </context>
 <context>

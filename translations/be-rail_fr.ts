@@ -51,12 +51,12 @@
         <translation>Au sujet de Qt</translation>
     </message>
     <message>
-        <source>About Menu</source>
-        <translation>Menu Au sujet de</translation>
-    </message>
-    <message>
         <source>&lt;b&gt;be-rail&lt;/b&gt; version </source>
         <translation>Version de &lt;b&gt;be-rail&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>About be-rail</source>
+        <translation>Au sujet de be-rail</translation>
     </message>
 </context>
 <context>

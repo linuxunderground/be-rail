@@ -139,7 +139,7 @@ void MainWindow::quit()
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About Menu"),
+    QMessageBox::about(this, tr("About be-rail"),
             tr("<b>be-rail</b> "
                "version " STR_VERSION "<br>"));
 }
