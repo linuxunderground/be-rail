@@ -9,14 +9,22 @@ if(WIN32)
   if(NOT DATADIR)
     set(DATADIR "../db")
   endif()
+  if(NOT TRANSLATIONS_DIR)
+    set(TRANSLATIONS_DIR "../translations")
+  endif()
 else()
   include(GNUInstallDirs)
   if(NOT DATADIR)
     set(DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/be-rail")
   endif()
+  if(NOT TRANSLATIONS_DIR)
+    set(TRANSLATIONS_DIR "${DATADIR}/translations")
+  endif()
 endif()
 
 set(EXE_NAME be-rail)
+
+file (GLOB BE_RAIL_TS translations/*.ts)
 
 set(BE_RAIL_DB
     db/be-rail-fr.sqlite
@@ -43,6 +51,7 @@ add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 
 add_definitions(-DDATADIR=\"${DATADIR}\")
+add_definitions(-DTRANSLATIONS_DIR=\"${TRANSLATIONS_DIR}\")
 add_definitions(-DSTR_VERSION=\"${STR_VERSION}\")
 
 add_subdirectory(src)

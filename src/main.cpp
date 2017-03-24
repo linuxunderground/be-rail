@@ -19,6 +19,7 @@
 
 
 #include <QApplication>
+#include <QTranslator>
 #ifndef NDEBUG
 #include <QSqlDatabase>
 #include <QDebug>
@@ -38,14 +39,23 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+    QTranslator translator;
+
     app.setWindowIcon(QIcon(":/be-rail.png"));
+    QString fname = QString("be-rail_%1.qm").arg(QLocale::system().name().left(2));
 
 #ifndef NDEBUG
     qDebug() << "Available drivers :";
     foreach (QString name, QSqlDatabase::drivers()) qDebug() << name;
     qDebug() << "QLocale::system().name()        = " << QLocale::system().name();
     qDebug() << "QLocale::system().uiLanguages() = " << QLocale::system().uiLanguages();
+    qDebug() << "TRANSLATIONS_DIR: Loading translation file" << fname << "from dir" << TRANSLATIONS_DIR;
+    qDebug() << "load success:" << translator.load(fname, TRANSLATIONS_DIR, "_");
+#else
+    translator.load(fname, TRANSLATIONS_DIR, "_");
 #endif
+
+    app.installTranslator(&translator);
 
     MainWindow window;
     window.show();

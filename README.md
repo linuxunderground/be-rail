@@ -25,12 +25,15 @@ See scripts/build-db.sh
 Linux compilation:   
    
 $ cmake .  
-($ cmake -DCMAKE_BUILD_TYPE=Debug .  if you want debug build)  
-($ cmake -DDATADIR=../db .  if you want to start be-rail from build directory without installation)  
-$ make   
-$ sudo make install   
-   
-   
+$ make  
+$ sudo make install  
+  
+If you want debug build  
+$ cmake -DCMAKE_BUILD_TYPE=Debug .  
+If you want to start be-rail from build directory without installation  
+$ cmake -DDATADIR=../db -DTRANSLATIONS_DIR=../src .  
+  
+  
 Windows(tm) compilation:
    
 I used [Qt 5.7.1 for Windows 32-bit (MinGW 5.3.0, 1.1 GB)](https://www.qt.io/download-open-source/)
@@ -43,6 +46,7 @@ If you created a dynamically linked executable (default), you will need to run
 this command to provide the required dll with the executable :  
   
 C:\be-rail> cd build  
-C:\be-rail\build> windeployqt --release --no-opengl-sw --no-translations be-rail.exe  
+C:\be-rail\build> windeployqt --release --no-opengl-sw be-rail.exe  
   
-Unlike linux version, the database must be in a db subdirectory.
+Unlike linux version, the database must be in a db subdirectory and
+translation files in translations subdirectory.
