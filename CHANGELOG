@@ -1,3 +1,10 @@
+0.1.0 / 2017-03-26
+==================
+
+  * Translations management.
+  * Main Window with TabWidget (one tab for stations and one tab for lines).
+
+
 0.0.3 / 2017-01-13
 ==================
 
