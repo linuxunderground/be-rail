@@ -2,7 +2,7 @@
 #
 # Build be-rail sqlite database
 #
-# Copyright (C) 2016  be-rail@linuxunderground.be
+# Copyright (C) 2016-2017  be-rail@linuxunderground.be
 # Distributed under the terms of the GNU General Public License v3
 #
 
@@ -10,6 +10,7 @@
 DBEN="be-rail.sqlite"
 DBFR="be-rail-fr.sqlite"
 DBNL="be-rail-nl.sqlite"
+DBGE="be-rail-ge.sqlite"
 
 STATIONS_CSV="stations.csv"
 LINES_CSV="lines.csv"
@@ -32,6 +33,11 @@ then
   rm $DBNL
 fi
 
+if [ -f "$DBGE" ]
+then
+  rm $DBGE
+fi
+
 echo " \
 CREATE TABLE stations ( \
 regkey integer primary key, \
@@ -50,6 +56,7 @@ name varchar(60) \
 
 cp "$DBEN" "$DBFR"
 cp "$DBEN" "$DBNL"
+cp "$DBEN" "$DBGE"
 
 
 # build csv files
@@ -68,6 +75,8 @@ sqlite3 -csv "$DBFR" ".import /dev/stdin stations"
 cat "$STATIONS_CSV" | ./nl2en.sh | \
 sqlite3 -csv "$DBEN" ".import /dev/stdin stations"
 
+cat "$STATIONS_CSV" | ./nl2ge.sh | \
+sqlite3 -csv "$DBGE" ".import /dev/stdin stations"
 
 # import lines
 
@@ -79,3 +88,6 @@ sqlite3 -csv "$DBFR" ".import /dev/stdin lines"
 
 cat "$LINES_CSV" | ./nl2en.sh | \
 sqlite3 -csv "$DBEN" ".import /dev/stdin lines"
+
+cat "$LINES_CSV" | ./nl2ge.sh | \
+sqlite3 -csv "$DBGE" ".import /dev/stdin lines"

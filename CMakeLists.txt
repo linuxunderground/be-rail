@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(be-rail)
 
-set(STR_VERSION "0.1.0")
+set(STR_VERSION "0.1.1")
 
 if(WIN32)
   set(CMAKE_INSTALL_BINDIR "${CMAKE_INSTALL_PREFIX}/be-rail/bin")
@@ -29,6 +29,7 @@ file (GLOB BE_RAIL_TS translations/*.ts)
 set(BE_RAIL_DB
     db/be-rail-fr.sqlite
     db/be-rail-nl.sqlite
+    db/be-rail-ge.sqlite
     db/be-rail.sqlite
 )
 
