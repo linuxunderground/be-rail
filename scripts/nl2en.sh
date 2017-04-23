@@ -16,9 +16,9 @@ sed \
   -e 's/verwijst de code FCV misschien naar/The FCV code may refer to/' \
   -e 's/werkbasis en noodperron bij/workplace and emergency on/' \
   -e 's/Franse benaming/French denomination/' \
-  -e 's/in december 2002 omgedoopt in Spa-Géronstère en van een code voorzien; zie aldaar/Renamed Spa-Géronstère in December 2002 and provided with the intended code (FSSG)/' \
+  -e 's|in december 2002 omgedoopt in Spa-Géronstère en van een code voorzien / zie aldaar|Renamed Spa-Géronstère in December 2002 and provided with the intended code (FSSG)|' \
   -e 's/verbindingswissels en uitwijkspoor op/emergency siding on/' \
-  -e "s/tot dec. 2002; had geen code/no code before december 2002/" \
+  -e "s|tot dec. 2002 / had geen code|no code before december 2002|" \
   -e 's/-Strand/-Beach/' \
   -e 's/Kaai/Pier/' \
   -e 's/uitwijkspoor en noodperron op/emergency siding and workplace on/' \

@@ -17,9 +17,9 @@ sed \
   -e 's/verwijst de code FCV misschien naar/abkürzung FCV verweist wahrscheinlich nach/' \
   -e "s/werkbasis en noodperron bij HSL/arbeitstelle und hilfbahnsteig von NBS/" \
   -e 's/Franse benaming/Französische bezeichnung/' \
-  -e 's/in december 2002 omgedoopt in Spa-Géronstère en van een code voorzien; zie aldaar/in Dez.2002 in Spa-Géronstère umbenennt und mit einer abkürzung versehen; siehe dort (FSSG)/' \
+  -e 's|in december 2002 omgedoopt in Spa-Géronstère en van een code voorzien / zie aldaar|in Dez.2002 in Spa-Géronstère umbenennt und mit einer abkürzung versehen : siehe dort (FSSG)|' \
   -e "s/verbindingswissels en uitwijkspoor op HSL/verbindungs und abstellgleisweiche auf NBS/" \
-  -e "s/tot dec. 2002; had geen code/bis Dez.2002; hat kein abkürzung/" \
+  -e "s|tot dec. 2002 / had geen code|bis Dez.2002; hat kein abkürzung|" \
   -e 's/-Strand/-Strand/' \
   -e 's/Kaai/Kai/' \
   -e "s/uitwijkspoor en noodperron op HSL/abstellgleis und behelfsbahnsteig auf NBS/" \
