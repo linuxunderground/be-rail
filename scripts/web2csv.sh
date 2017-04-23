@@ -70,6 +70,7 @@ cat "$STATIONS" | grep "^[0-9]" | grep -v "^...[0-9]" | \
     -e '/[A-Z]\{2,4\},[A-Z]\{2,4\},/ s|,n-a,n-a,||' \
     -e 's|hslxxx|HSL|;s|fcvxxx|FCV|' \
     -e '/Géronstère (in/ s|Géronstère |Géronstère,n-a,n-a,|' \
+    -e 's|FNDM,F|FNDMF|' \
     -e 's|,n-a,n-a,||2' \
     -e '/,$/! s|$|,|' \
     -e 's|$|,|' | cat -n | sed \
@@ -101,4 +102,6 @@ cat "$LINES" | grep '^<B>[0-9]' | \
     -e 's/\&eacute/é/g' \
     -e 's/\&egrave;/è/g' \
     -e 's/\&ecirc;/ê/g' \
+    -e 's/\&icirc;/î/g' \
+    -e 's/\&uuml;/ü/g' \
     -e 's/\&ocirc;/ô/g' > $2
