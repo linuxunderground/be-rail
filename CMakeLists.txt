@@ -26,12 +26,7 @@ set(EXE_NAME be-rail)
 
 file (GLOB BE_RAIL_TS translations/*.ts)
 
-set(BE_RAIL_DB
-    db/be-rail-fr.sqlite
-    db/be-rail-nl.sqlite
-    db/be-rail-ge.sqlite
-    db/be-rail.sqlite
-)
+set(BE_RAIL_DB db/be-rail.sqlite)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/build)
 
@@ -44,7 +39,7 @@ set(CPACK_PACKAGE_NAME "be-rail")
 set(CPACK_PACKAGE_VERSION "${STR_VERSION}")
 set(CPACK_SOURCE_GENERATOR "TXZ;ZIP")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
-set(CPACK_SOURCE_IGNORE_FILES "/build/;/CMakeFiles/;/_CPack_Packages/;/\\\\.git/;cmake$;depends$;Makefile;\\\\.zip$;tar\\\\.xz$;tar\\\\.bz2$;CMakeCache.txt")
+set(CPACK_SOURCE_IGNORE_FILES "/cache/;/build/;/CMakeFiles/;/_CPack_Packages/;/\\\\.git/;cmake$;depends$;Makefile;\\\\.zip$;tar\\\\.xz$;tar\\\\.bz2$;CMakeCache.txt")
 include(CPack)
 
 # simulate autotools' "make dist"

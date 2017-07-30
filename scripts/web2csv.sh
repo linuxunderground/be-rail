@@ -76,7 +76,8 @@ cat "$STATIONS" | grep "^[0-9]" | grep -v "^...[0-9]" | \
     -e 's|$|,|' | cat -n | sed \
     -e 's|n-a||g' \
     -e 's|[[:space:]]\{1,\}||' \
-    -e 's|[[:space:]]\{1,\}|,|' > $1
+    -e 's|[[:space:]]\{1,\}|,|' | \
+awk -F"," '{print $1","$2","$3","$4","$5","$6","$7","$7","$7","$7}' > $1
 
 
 # Grab lines
@@ -104,4 +105,5 @@ cat "$LINES" | grep '^<B>[0-9]' | \
     -e 's/\&ecirc;/ê/g' \
     -e 's/\&icirc;/î/g' \
     -e 's/\&uuml;/ü/g' \
-    -e 's/\&ocirc;/ô/g' > $2
+    -e 's/\&ocirc;/ô/g' | \
+awk -F"," '{print $1","$2","$2","$2","$2}' > $2

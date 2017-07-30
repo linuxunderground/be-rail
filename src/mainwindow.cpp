@@ -68,12 +68,11 @@ MainWindow::MainWindow()
 void MainWindow::setupDB()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    QString dbfilename = DATADIR "/be-rail-" + QLocale::system().name().left(2) + ".sqlite";
+    QString dbfilename = DATADIR "/be-rail.sqlite";
     if (!QFile::exists(dbfilename))
     {
         qDebug() << dbfilename << "not found";
-        dbfilename = DATADIR "/be-rail.sqlite";
-        qDebug() << dbfilename << "fallback";
+        return;
     }
     db.setDatabaseName(dbfilename);
 
@@ -151,16 +150,41 @@ void StationsTab::on_sectionClicked(int aIndex)
 
 StationsTab::StationsTab(QWidget *parent) : QWidget(parent)
 {
+    QString locale = QLocale::system().name().left(2);
     QSqlTableModel *stationsModel = new QSqlTableModel;
     stationsModel->setTable("stations");
+    //stationsModel->setFilter("OOS = 'N'") to use with a checkbox for example
     stationsModel->select();
     stationsModel->removeColumn(0);
+    if (locale == "nl")
+    {
+        stationsModel->removeColumn(8);
+        stationsModel->removeColumn(7);
+        stationsModel->removeColumn(6);
+    } else
+    if (locale == "fr")
+    {
+        stationsModel->removeColumn(8);
+        stationsModel->removeColumn(7);
+        stationsModel->removeColumn(5);
+    } else
+    if (locale == "de")
+    {
+        stationsModel->removeColumn(8);
+        stationsModel->removeColumn(6);
+        stationsModel->removeColumn(5);
+    } else
+    {
+        stationsModel->removeColumn(7);
+        stationsModel->removeColumn(6);
+        stationsModel->removeColumn(5);
+    }
     stationsModel->setHeaderData(0, Qt::Horizontal,tr("Line"));
     stationsModel->setHeaderData(1, Qt::Horizontal,tr("OOS"));
     stationsModel->setHeaderData(2, Qt::Horizontal,tr("Station"));
     stationsModel->setHeaderData(3, Qt::Horizontal,tr("Code"));
     stationsModel->setHeaderData(4, Qt::Horizontal,tr("Old code"));
-    stationsModel->setHeaderData(5, Qt::Horizontal,tr("Remark"));
+    stationsModel->setHeaderData(5, Qt::Horizontal,tr("Note"));
     stationsView = new QTableView;
     stationsView->verticalHeader()->setVisible(false);
     stationsView->horizontalHeader()->setSortIndicatorShown(true);
@@ -190,9 +214,33 @@ void LinesTab::on_sectionClicked(int aIndex)
 
 LinesTab::LinesTab(QWidget *parent) : QWidget(parent)
 {
+    QString locale = QLocale::system().name().left(2);
     QSqlTableModel *linesModel = new QSqlTableModel;
     linesModel->setTable("lines");
     linesModel->select();
+    if (locale == "nl")
+    {
+        linesModel->removeColumn(4);
+        linesModel->removeColumn(3);
+        linesModel->removeColumn(2);
+    } else
+    if (locale == "fr")
+    {
+        linesModel->removeColumn(4);
+        linesModel->removeColumn(3);
+        linesModel->removeColumn(1);
+    } else
+    if (locale == "de")
+    {
+        linesModel->removeColumn(4);
+        linesModel->removeColumn(2);
+        linesModel->removeColumn(1);
+    } else
+    {
+        linesModel->removeColumn(3);
+        linesModel->removeColumn(2);
+        linesModel->removeColumn(1);
+    }
     linesModel->setHeaderData(0, Qt::Horizontal,tr("Number"));
     linesModel->setHeaderData(1, Qt::Horizontal,tr("Name"));
     linesView = new QTableView;

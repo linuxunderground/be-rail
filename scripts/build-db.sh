@@ -7,10 +7,7 @@
 #
 
 
-DBEN="be-rail.sqlite"
-DBFR="be-rail-fr.sqlite"
-DBNL="be-rail-nl.sqlite"
-DBGE="be-rail-ge.sqlite"
+DB="be-rail.sqlite"
 
 STATIONS_CSV="stations.csv"
 LINES_CSV="lines.csv"
@@ -18,24 +15,9 @@ LINES_CSV="lines.csv"
 
 # create sqlite DB
 
-if [ -f "$DBEN" ]
+if [ -f "$DB" ]
 then
-  rm $DBEN
-fi
-
-if [ -f "$DBFR" ]
-then
-  rm $DBFR
-fi
-
-if [ -f "$DBNL" ]
-then
-  rm $DBNL
-fi
-
-if [ -f "$DBGE" ]
-then
-  rm $DBGE
+  rm $DB
 fi
 
 echo " \
@@ -46,17 +28,19 @@ OOS char(1) COLLATE NOCASE, \
 station varchar(40) COLLATE NOCASE, \
 code varchar(5), \
 oldcode varchar(5), \
-remark varchar(50) \
+note_nl varchar(50), \
+note_fr varchar(50), \
+note_de varchar(50), \
+note_en varchar(50) \
 ); \
 CREATE TABLE lines ( \
 number varchar(5) primary key, \
-name varchar(60) \
+name_nl varchar(60), \
+name_fr varchar(60), \
+name_de varchar(60), \
+name_en varchar(60) \
 ); \
-" | sqlite3 "$DBEN"
-
-cp "$DBEN" "$DBFR"
-cp "$DBEN" "$DBNL"
-cp "$DBEN" "$DBGE"
+" | sqlite3 "$DB"
 
 
 # build csv files
@@ -64,30 +48,23 @@ cp "$DBEN" "$DBGE"
 ./web2csv.sh "$STATIONS_CSV" "$LINES_CSV"
 
 
+# add translations
+# WARNING: do not change call order !!!
+./nl2fr_stations.sh
+./nl2fr_lines.sh
+./nl2de_stations.sh
+./nl2de_lines.sh
+./nl2en_stations.sh
+./nl2en_lines.sh
+
+
 # import stations
 
 cat "$STATIONS_CSV" | \
-sqlite3 -csv "$DBNL" ".import /dev/stdin stations"
+sqlite3 -csv "$DB" ".import /dev/stdin stations"
 
-cat "$STATIONS_CSV" | ./nl2fr.sh | \
-sqlite3 -csv "$DBFR" ".import /dev/stdin stations"
-
-cat "$STATIONS_CSV" | ./nl2en.sh | \
-sqlite3 -csv "$DBEN" ".import /dev/stdin stations"
-
-cat "$STATIONS_CSV" | ./nl2ge.sh | \
-sqlite3 -csv "$DBGE" ".import /dev/stdin stations"
 
 # import lines
 
 cat "$LINES_CSV" | \
-sqlite3 -csv "$DBNL" ".import /dev/stdin lines"
-
-cat "$LINES_CSV" | ./nl2fr.sh | \
-sqlite3 -csv "$DBFR" ".import /dev/stdin lines"
-
-cat "$LINES_CSV" | ./nl2en.sh | \
-sqlite3 -csv "$DBEN" ".import /dev/stdin lines"
-
-cat "$LINES_CSV" | ./nl2ge.sh | \
-sqlite3 -csv "$DBGE" ".import /dev/stdin lines"
+sqlite3 -csv "$DB" ".import /dev/stdin lines"
