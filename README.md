@@ -58,4 +58,5 @@ translation files in translations subdirectory.
 ## Windows(tm) executable
 
 Windows executable is provided in Releases section of this repository.
-Simply unzip the file where you want and double-click bin\be-rail.exe file.
+Simply unzip the file where you want and double-click be-rail.exe file
+(you can find it in the "bin" subdirectory).
