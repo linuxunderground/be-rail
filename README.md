@@ -32,7 +32,7 @@ $ make
 $ sudo make install
 ```
 If you want debug build  
-```$ cmake -DCMAKE_BUILD_TYPE=Debug .```
+```$ cmake -DCMAKE_BUILD_TYPE=Debug .```  
 If you want to start be-rail from build directory without installation  
 ```$ cmake -DDATADIR=../db -DTRANSLATIONS_DIR=../src .```
 
