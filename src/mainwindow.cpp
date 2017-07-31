@@ -24,9 +24,9 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLayout>
+#include <QCursor>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QSqlTableModel>
 #include <QHeaderView>
 #include <QStyleOptionHeader>
 #include <QMessageBox>
@@ -35,15 +35,17 @@
 #include <QFile>
 #include <QDebug>
 
-void sectionClicked(QTableView *aTableView, int aIndex)
+QString sectionOrder(QTableView *aTableView, int aIndex)
 {
     if (aTableView->horizontalHeader()->sortIndicatorOrder()==Qt::AscendingOrder)
     {
         aTableView->sortByColumn(aIndex,Qt::AscendingOrder);
+        return "ASC";
     }
     else
     {
         aTableView->sortByColumn(aIndex,Qt::DescendingOrder);
+        return "DESC";
     }
 }
 
@@ -139,46 +141,63 @@ void MainWindow::quit()
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About be-rail"),
-            tr("<b>be-rail</b> "
-               "version " STR_VERSION "<br>"));
+        tr("<b>be-rail</b> "
+           "version " STR_VERSION "<br>")+"<br>"+
+           "<a href=\"https://github.com/linuxunderground/be-rail\">https://github.com/linuxunderground/be-rail</a>"
+        );
 }
 
 void StationsTab::on_sectionClicked(int aIndex)
 {
-    sectionClicked(stationsView, aIndex);
+    QCursor waitCursor;
+    QString aQuery;
+
+    waitCursor.setShape(Qt::WaitCursor);
+    this->setCursor(waitCursor);
+
+    aQuery = stationsSelect + " order by ";
+    switch (aIndex)
+    {
+        case 0:  aQuery = aQuery + "line";
+                 break;
+        case 1:  aQuery = aQuery + "OOS";
+                 break;
+        case 2:  aQuery = aQuery + "station";
+                 break;
+        case 3:  aQuery = aQuery + "code";
+                 break;
+        case 4:  aQuery = aQuery + "oldcode";
+                 break;
+        case 5:  aQuery = aQuery + "note";
+                 break;
+    }
+    aQuery = aQuery + " " + sectionOrder(stationsView, aIndex);
+
+    stationsModel->setQuery(aQuery);
+    while (stationsModel->canFetchMore()) stationsModel->fetchMore();
+    stationsView->resizeRowsToContents();
+
+    waitCursor.setShape(Qt::ArrowCursor);
+    this->setCursor(waitCursor);
 }
 
 StationsTab::StationsTab(QWidget *parent) : QWidget(parent)
 {
     QString locale = QLocale::system().name().left(2);
-    QSqlTableModel *stationsModel = new QSqlTableModel;
-    stationsModel->setTable("stations");
-    //stationsModel->setFilter("OOS = 'N'") to use with a checkbox for example
-    stationsModel->select();
-    stationsModel->removeColumn(0);
-    if (locale == "nl")
+
+    stationsModel = new QSqlQueryModel;
+
+    stationsSelect = "select line,OOS,station,code,oldcode,note_";
+    if ((locale == "nl") || (locale == "fr") || (locale == "de"))
     {
-        stationsModel->removeColumn(8);
-        stationsModel->removeColumn(7);
-        stationsModel->removeColumn(6);
-    } else
-    if (locale == "fr")
-    {
-        stationsModel->removeColumn(8);
-        stationsModel->removeColumn(7);
-        stationsModel->removeColumn(5);
-    } else
-    if (locale == "de")
-    {
-        stationsModel->removeColumn(8);
-        stationsModel->removeColumn(6);
-        stationsModel->removeColumn(5);
+        stationsSelect = stationsSelect + locale;
     } else
     {
-        stationsModel->removeColumn(7);
-        stationsModel->removeColumn(6);
-        stationsModel->removeColumn(5);
+        stationsSelect = stationsSelect + "en";
     }
+    stationsSelect = stationsSelect + " as note from stations";
+    stationsModel->setQuery(stationsSelect + " order by code ASC");
+    while (stationsModel->canFetchMore()) stationsModel->fetchMore();
     stationsModel->setHeaderData(0, Qt::Horizontal,tr("Line"));
     stationsModel->setHeaderData(1, Qt::Horizontal,tr("OOS"));
     stationsModel->setHeaderData(2, Qt::Horizontal,tr("Station"));
@@ -197,10 +216,13 @@ StationsTab::StationsTab(QWidget *parent) : QWidget(parent)
     QHeaderView *hHeaderView = stationsView->horizontalHeader();
     connect(hHeaderView, SIGNAL(sectionClicked(int)), this, SLOT(on_sectionClicked(int)));
 
+    //Just to draw sort indicator (in consistency with "order by code ASC" above)
     stationsView->sortByColumn(3,Qt::AscendingOrder);
     stationsView->resizeColumnsToContents();
-    //stationView->resizeRowsToContents();  // Why is it not as simple as this ?
-    stationsView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    //Works only if all records are fetched...
+    stationsView->resizeRowsToContents();
+    //otherwise use rather next line...
+    //stationsView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     QVBoxLayout *MainLayout = new QVBoxLayout;
     MainLayout->addWidget(stationsView);
@@ -209,38 +231,49 @@ StationsTab::StationsTab(QWidget *parent) : QWidget(parent)
 
 void LinesTab::on_sectionClicked(int aIndex)
 {
-    sectionClicked(linesView, aIndex);
+    sectionOrder(linesView, aIndex);
+
+    QCursor waitCursor;
+    QString aQuery;
+
+    waitCursor.setShape(Qt::WaitCursor);
+    this->setCursor(waitCursor);
+
+    aQuery = linesSelect + " order by ";
+    switch (aIndex)
+    {
+        case 0:  aQuery = aQuery + "number";
+                 break;
+        case 1:  aQuery = aQuery + "name";
+                 break;
+    }
+    aQuery = aQuery + " " + sectionOrder(linesView, aIndex);
+
+    linesModel->setQuery(aQuery);
+    while (linesModel->canFetchMore()) linesModel->fetchMore();
+    linesView->resizeRowsToContents();
+
+    waitCursor.setShape(Qt::ArrowCursor);
+    this->setCursor(waitCursor);
 }
 
 LinesTab::LinesTab(QWidget *parent) : QWidget(parent)
 {
     QString locale = QLocale::system().name().left(2);
-    QSqlTableModel *linesModel = new QSqlTableModel;
-    linesModel->setTable("lines");
-    linesModel->select();
-    if (locale == "nl")
+
+    linesModel = new QSqlQueryModel;
+
+    linesSelect = "select number,name_";
+    if ((locale == "nl") || (locale == "fr") || (locale == "de"))
     {
-        linesModel->removeColumn(4);
-        linesModel->removeColumn(3);
-        linesModel->removeColumn(2);
-    } else
-    if (locale == "fr")
-    {
-        linesModel->removeColumn(4);
-        linesModel->removeColumn(3);
-        linesModel->removeColumn(1);
-    } else
-    if (locale == "de")
-    {
-        linesModel->removeColumn(4);
-        linesModel->removeColumn(2);
-        linesModel->removeColumn(1);
+        linesSelect = linesSelect + locale;
     } else
     {
-        linesModel->removeColumn(3);
-        linesModel->removeColumn(2);
-        linesModel->removeColumn(1);
+        linesSelect = linesSelect + "en";
     }
+    linesSelect = linesSelect + " as name from lines";
+    linesModel->setQuery(linesSelect + " order by number ASC");
+    while (linesModel->canFetchMore()) linesModel->fetchMore();
     linesModel->setHeaderData(0, Qt::Horizontal,tr("Number"));
     linesModel->setHeaderData(1, Qt::Horizontal,tr("Name"));
     linesView = new QTableView;
@@ -255,9 +288,10 @@ LinesTab::LinesTab(QWidget *parent) : QWidget(parent)
     QHeaderView *hHeaderView = linesView->horizontalHeader();
     connect(hHeaderView, SIGNAL(sectionClicked(int)), this, SLOT(on_sectionClicked(int)));
 
-    //stationsView->sortByColumn(0,Qt::AscendingOrder);
+    //Just to draw sort indicator (in consistency with "order by number ASC" above)
+    linesView->sortByColumn(0,Qt::AscendingOrder);
     linesView->resizeColumnsToContents();
-    linesView->resizeRowsToContents();  // Why does this not work for stations view ?
+    linesView->resizeRowsToContents();
 
     QVBoxLayout *MainLayout = new QVBoxLayout;
     MainLayout->addWidget(linesView);

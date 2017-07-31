@@ -22,6 +22,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSqlQueryModel>
 #include <QTableView>
 
 
@@ -36,6 +37,8 @@ class StationsTab : public QWidget
         void on_sectionClicked(int);
 
     private:
+        QString stationsSelect;
+        QSqlQueryModel *stationsModel;
         QTableView *stationsView;
 };
 
@@ -50,6 +53,8 @@ class LinesTab : public QWidget
         void on_sectionClicked(int);
 
     private:
+        QString linesSelect;
+        QSqlQueryModel *linesModel;
         QTableView *linesView;
 };
 
