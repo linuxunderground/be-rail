@@ -82,7 +82,7 @@
         <translation>Oude code</translation>
     </message>
     <message>
-        <source>Remark</source>
+        <source>Note</source>
         <translation>Opmerking</translation>
     </message>
 </context>

@@ -82,7 +82,7 @@
         <translation>Ancien</translation>
     </message>
     <message>
-        <source>Remark</source>
+        <source>Note</source>
         <translation>Remarque</translation>
     </message>
 </context>

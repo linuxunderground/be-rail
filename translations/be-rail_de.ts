@@ -56,7 +56,7 @@
     </message>
     <message>
         <source>About be-rail</source>
-        <translation type="unfinished"></translation>
+        <translation>Über be-rail</translation>
     </message>
 </context>
 <context>
@@ -82,7 +82,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remark</source>
+        <source>Note</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
