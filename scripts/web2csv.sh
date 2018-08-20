@@ -2,7 +2,7 @@
 #
 # Grab be-rail data from Paul Kevers website
 #
-# Copyright (C) 2016-2017  be-rail@linuxunderground.be
+# Copyright (C) 2016-2018  be-rail@linuxunderground.be
 # Distributed under the terms of the GNU General Public License v3
 #
 
@@ -10,21 +10,27 @@
 # To be sure that sed will behave as expected :
 export LC_COLLATE="C"
 
+SCRIPT=$(dirname $0)
+CACHE="${SCRIPT}/../cache"
+DBDIR="${SCRIPT}/../db"
 
 WEBSITE="http://users.telenet.be/pk/"
 STATIONS="stations.htm"
 LINES="lijnen.htm"
 
+STATIONS_CSV="stations.csv"
+LINES_CSV="lines.csv"
+
 
 # Grab stations
 
-if [ ! -f "$STATIONS" ]
+if [ ! -f "${CACHE}/${STATIONS}" ]
 then
-    wget "$WEBSITE$STATIONS"
+    wget -P "${CACHE}" "${WEBSITE}${STATIONS}"
 fi
 
 # remove "-e 's|n-a||g' \" if you want "n-a" in empty cells
-cat "$STATIONS" | grep "^[0-9]" | grep -v "^...[0-9]" | \
+cat "${CACHE}/${STATIONS}" | grep "^[0-9]" | grep -v "^...[0-9]" | \
   sed \
     -e 's|<[^<]*>||g' \
     -e 's/\&quot;/"/g' \
@@ -77,17 +83,17 @@ cat "$STATIONS" | grep "^[0-9]" | grep -v "^...[0-9]" | \
     -e 's|n-a||g' \
     -e 's|[[:space:]]\{1,\}||' \
     -e 's|[[:space:]]\{1,\}|,|' | \
-awk -F"," '{print $1","$2","$3","$4","$5","$6","$7","$7","$7","$7}' > $1
+awk -F"," '{print $1","$2","$3","$4","$5","$6","$7","$7","$7","$7}' > "${DBDIR}/${STATIONS_CSV}"
 
 
 # Grab lines
 
-if [ ! -f "$LINES" ]
+if [ ! -f "${CACHE}/${LINES}" ]
 then
-    wget "$WEBSITE$LINES"
+    wget -P "${CACHE}" "${WEBSITE}${LINES}"
 fi
 
-cat "$LINES" | grep '^<B>[0-9]' | \
+cat "${CACHE}/${LINES}" | grep '^<B>[0-9]' | \
   sed \
     -e 's|</B>  |,|' \
     -e 's|<[^<]*>||g' \
@@ -106,4 +112,4 @@ cat "$LINES" | grep '^<B>[0-9]' | \
     -e 's/\&icirc;/î/g' \
     -e 's/\&uuml;/ü/g' \
     -e 's/\&ocirc;/ô/g' | \
-awk -F"," '{print $1","$2","$2","$2","$2}' > $2
+awk -F"," '{print $1","$2","$2","$2","$2}' > "${DBDIR}/${LINES_CSV}"

@@ -2,22 +2,24 @@
 #
 # Build be-rail sqlite database
 #
-# Copyright (C) 2016-2017  be-rail@linuxunderground.be
+# Copyright (C) 2016-2018  be-rail@linuxunderground.be
 # Distributed under the terms of the GNU General Public License v3
 #
 
+SCRIPT=$(dirname $0)
+DBDIR="${SCRIPT}/../db"
 
-DB="be-rail.sqlite"
+DB="${DBDIR}/be-rail.sqlite"
 
-STATIONS_CSV="stations.csv"
-LINES_CSV="lines.csv"
+STATIONS_CSV="${DBDIR}/stations.csv"
+LINES_CSV="${DBDIR}/lines.csv"
 
 
 # create sqlite DB
 
-if [ -f "$DB" ]
+if [ -f "${DB}" ]
 then
-  rm $DB
+  rm "${DB}"
 fi
 
 echo " \
@@ -40,31 +42,30 @@ name_fr varchar(60), \
 name_de varchar(60), \
 name_en varchar(60) \
 ); \
-" | sqlite3 "$DB"
+" | sqlite3 "${DB}"
 
 
 # build csv files
 
-./web2csv.sh "$STATIONS_CSV" "$LINES_CSV"
+"${SCRIPT}"/web2csv.sh
 
 
 # add translations
 # WARNING: do not change call order !!!
-./nl2fr_stations.sh
-./nl2fr_lines.sh
-./nl2de_stations.sh
-./nl2de_lines.sh
-./nl2en_stations.sh
-./nl2en_lines.sh
+
+"${SCRIPT}"/nl2fr_stations.sh
+"${SCRIPT}"/nl2fr_lines.sh
+"${SCRIPT}"/nl2de_stations.sh
+"${SCRIPT}"/nl2de_lines.sh
+"${SCRIPT}"/nl2en_stations.sh
+"${SCRIPT}"/nl2en_lines.sh
 
 
 # import stations
 
-cat "$STATIONS_CSV" | \
-sqlite3 -csv "$DB" ".import /dev/stdin stations"
+sqlite3 -csv "$DB" ".import ${STATIONS_CSV} stations"
 
 
 # import lines
 
-cat "$LINES_CSV" | \
-sqlite3 -csv "$DB" ".import /dev/stdin lines"
+sqlite3 -csv "$DB" ".import ${LINES_CSV} lines"

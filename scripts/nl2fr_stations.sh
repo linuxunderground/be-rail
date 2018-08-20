@@ -2,7 +2,7 @@
 #
 # Dutch to French - stations table
 #
-# Copyright (C) 2017  be-rail@linuxunderground.be
+# Copyright (C) 2017-2018  be-rail@linuxunderground.be
 # Distributed under the terms of the GNU General Public License v3
 #
 
@@ -10,7 +10,7 @@
 # To be sure that sed will behave as expected :
 export LC_COLLATE="C"
 
-STATIONS_CSV="stations.csv"
+STATIONS_CSV="$(dirname $0)/../db/stations.csv"
 
 sed -i \
   -e 's/verwijst de code FCV misschien naar/Le code FCV se réfère peut-être à/2' \
