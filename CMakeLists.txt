@@ -39,8 +39,11 @@ set(CPACK_PACKAGE_NAME "be-rail")
 set(CPACK_PACKAGE_VERSION "${STR_VERSION}")
 set(CPACK_SOURCE_GENERATOR "TXZ;ZIP")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
-set(CPACK_SOURCE_IGNORE_FILES "/cache/;/build/;/CMakeFiles/;/_CPack_Packages/;/\\\\.git/;cmake$;depends$;Makefile;\\\\.zip$;tar\\\\.xz$;tar\\\\.bz2$;CMakeCache.txt")
+set(CPACK_SOURCE_IGNORE_FILES "/cache/;/build/;/CMakeFiles/;/_CPack_Packages/;/\\\\.git/;cmake$;depends$;Makefile;\\\\.zip$;tar\\\\.xz$;tar\\\\.bz2$;CMakeCache.txt;csv$")
 include(CPack)
+
+# make db/be-rail.sqlite
+add_custom_target(db COMMAND rm cache/*htm COMMAND scripts/build-db.sh)
 
 # simulate autotools' "make dist"
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
