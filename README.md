@@ -36,7 +36,7 @@ If you want debug build
 If you want to start be-rail from build directory without installation  
 ```$ cmake -DDATADIR=../db -DTRANSLATIONS_DIR=../src .```
 The database is provided in db subdirectory.
-However, if you want to generate an up-to-date DB yourself, after cmake (and before install)__
+However, if you want to generate an up-to-date DB yourself, after cmake (and before install)  
 ```$ make db```
 
 
