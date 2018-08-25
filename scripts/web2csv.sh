@@ -113,3 +113,21 @@ cat "${CACHE}/${LINES}" | grep '^<B>[0-9]' | \
     -e 's/\&uuml;/ü/g' \
     -e 's/\&ocirc;/ô/g' | \
 awk -F"," '{print $1","$2","$2","$2","$2}' > "${DBDIR}/${LINES_CSV}"
+
+cat "${CACHE}/${LINES}" | sed -e 's:\xB0:°:' | grep -a '^<DT>' | \
+  sed \
+    -e 's|</FONT>|,|' \
+    -e 's|<BR>*$||' \
+    -e 's|<[^<]*>||g' \
+    -e '/260/ s/(140).*$/(140)/ ; s/(in.*4) //' \
+    -e '/289/ s/ (na.*$//' \
+    -e '/220\*/ d' \
+    -e '/231\*/ d' \
+    -e '/280\*/ d' \
+    -e 's|\*,|,|' \
+    -e 's/\&amp;/\&/g' \
+    -e 's/\&euml;/ë/g' \
+    -e 's/&Eacute;/Ë/g' \
+    -e 's/&ecirc;/ê/g' \
+    -e 's/\&eacute;/é/g' | \
+awk -F"," '{print $1","$2","$2","$2","$2}' >> "${DBDIR}/${LINES_CSV}"
