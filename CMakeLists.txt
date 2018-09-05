@@ -28,7 +28,7 @@ file (GLOB BE_RAIL_TS translations/*.ts)
 
 set(BE_RAIL_DB db/be-rail.sqlite)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/build)
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -46,8 +46,35 @@ include(CPack)
 add_custom_target(db COMMAND rm cache/*htm COMMAND scripts/build-db.sh)
 
 # simulate autotools' "make dist"
-add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+add_custom_target(dist COMMAND "${CMAKE_MAKE_PROGRAM}" package_source)
 
+add_custom_target(distclean @echo cleaning for source distribution)
+add_custom_command(
+    COMMENT "distribution clean"
+    COMMAND make
+    ARGS -C "${CMAKE_CURRENT_BINARY_DIR}" clean
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove_directory "${EXECUTABLE_OUTPUT_PATH}"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/CMakeCache.txt"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/Makefile"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/*.cmake"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/src/CMakeFiles"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/src/*.cmake"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/src/*.depends"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/src/Makefile"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -E remove "${CMAKE_CURRENT_BINARY_DIR}/db/*.csv"
+    TARGET  distclean
+)
 
 add_definitions(-DDATADIR=\"${DATADIR}\")
 add_definitions(-DTRANSLATIONS_DIR=\"${TRANSLATIONS_DIR}\")
